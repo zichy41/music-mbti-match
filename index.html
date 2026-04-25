@@ -3,242 +3,78 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>声命镜像 - 古典音乐家性格测评</title>
-    
+    <title>声命镜像 Pro</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700&family=Playfair+Display:ital,wght@1,600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-    <style>
-        :root {
-            --primary: #6c5ce7;
-            --primary-light: #eeecfb;
-            --text-main: #2d3436;
-            --text-sub: #636e72;
-            --bg: #f8faff;
-            --white: #ffffff;
-            --agree: #00b894;
-            --disagree: #ff7675;
-        }
-
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { 
-            margin: 0; background-color: var(--bg); font-family: 'Noto Sans SC', sans-serif; 
-            color: var(--text-main); display: flex; justify-content: center; min-height: 100vh;
-        }
-
-        #app {
-            width: 100%; max-width: 414px; background: var(--white); min-height: 100vh;
-            position: relative; padding: 40px 25px; box-shadow: 0 0 50px rgba(0,0,0,0.02);
-            display: flex; flex-direction: column;
-        }
-
-        .hidden { display: none !important; }
-
-        
-        .welcome-icon { font-size: 5rem; color: var(--primary); margin-bottom: 20px; animation: rotate 10s linear infinite; }
-        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-
-        
-        .progress-container { width: 100%; height: 4px; background: #f0f0f0; border-radius: 2px; margin-bottom: 30px; }
-        .progress-bar { height: 100%; background: var(--primary); width: 0%; transition: width 0.4s ease; }
-
-        
-        #q-text { font-size: 1.3rem; line-height: 1.6; text-align: left; min-height: 120px; margin-top: 10px; }
-
-        
-        .scale-box { display: flex; justify-content: space-between; align-items: center; margin: 40px 0; }
-        .circle { border: 2.5px solid; border-radius: 50%; cursor: pointer; transition: 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        .circle:hover { transform: scale(1.15); }
-        .c-g { border-color: var(--agree); } 
-        .c-p { border-color: var(--disagree); }
-        .s3 { width: 50px; height: 50px; } .s2 { width: 40px; height: 40px; } .s1 { width: 32px; height: 32px; } 
-        .s0 { width: 24px; height: 24px; border-color: #d1d1d1; }
-
-        
-        .mbti-code { font-family: 'Playfair Display', serif; font-style: italic; color: var(--primary); font-size: 1.2rem; margin-bottom: 5px; }
-        h1 { font-size: 2.4rem; margin: 0 0 15px 0; }
-        .tag-container { display: flex; justify-content: center; gap: 8px; margin-bottom: 25px; }
-        .tag { background: var(--primary-light); color: var(--primary); padding: 5px 15px; border-radius: 20px; font-size: 0.8rem; font-weight: bold; }
-        
-        .desc-box { text-align: left; line-height: 1.8; color: var(--text-sub); position: relative; margin: 20px 0; padding: 0 5px; font-size: 0.95rem; }
-        .desc-box::before { content: '“'; position: absolute; left: -15px; top: -15px; font-size: 4rem; color: #f0f0f0; z-index: -1; }
-
-        .fact-list { text-align: left; padding: 0; list-style: none; border-top: 1px solid #f0f0f0; padding-top: 20px; }
-        .fact-item { display: flex; margin-bottom: 12px; font-size: 0.9rem; line-height: 1.4; }
-        .fact-item i { color: var(--primary); margin-right: 12px; margin-top: 3px; font-size: 0.8rem; }
-
-        .compat-card { margin-top: 25px; border-radius: 15px; padding: 15px; background: #fcfcfd; border: 1px solid #f0f0f5; text-align: left; }
-        .compat-item { display: flex; justify-content: space-between; margin: 8px 0; font-size: 0.9rem; }
-        
-        .btn-main {
-            background: #1d1d1f; color: white; border: none; padding: 18px; border-radius: 35px;
-            font-size: 1rem; font-weight: bold; cursor: pointer; width: 100%; margin-top: auto;
-        }
-    </style>
 </head>
 <body>
-
-<div id="app">
-    <div id="landing" class="screen">
-        <div style="margin-top: 80px;">
-            <div class="welcome-icon"><i class="fa-solid fa-compact-disc"></i></div>
-            <h1>声命镜像 </h1>
-            <p style="color: var(--text-sub);">透过 20 道灵魂调律，重连你的音乐镜像</p >
-        </div>
-        <button class="btn-main" onclick="start()" style="margin-top: 100px;">开始探索 <i class="fa-solid fa-arrow-right"></i></button>
-    </div>
-
-    <div id="quiz" class="screen hidden">
-        <div class="progress-container"><div class="progress-bar" id="inner-bar"></div></div>
-        <div style="text-align: left; font-weight: bold; color: #ccc; margin-bottom: 5px;">QUESTION <span id="q-num">1</span></div>
-        <h2 id="q-text">正在调律...</h2>
-        <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 0.8rem; margin-top: 50px;">
-            <span style="color: var(--agree)">同意</span><span style="color: var(--disagree)">反对</span>
-        </div>
-        <div class="scale-box">
-            <div class="circle c-g s3" onclick="next(3)"></div>
-            <div class="circle c-g s2" onclick="next(2)"></div>
-            <div class="circle c-g s1" onclick="next(1)"></div>
-            <div class="circle s0" onclick="next(0)"></div>
-            <div class="circle c-p s1" onclick="next(-1)"></div>
-            <div class="circle c-p s2" onclick="next(-2)"></div>
-            <div class="circle c-p s3" onclick="next(-3)"></div>
-        </div>
-    </div>
-
-    <div id="result" class="screen hidden">
-        <div class="mbti-code" id="res-mbti"></div>
-        <h1 id="res-name"></h1>
-        <div class="tag-container" id="res-tags"></div>
-        
-        <canvas id="radarChart" style="margin-bottom: 20px;"></canvas>
-
-        <div class="desc-box" id="res-desc"></div>
-
-        <ul class="fact-list" id="res-facts"></ul>
-
-        <div class="compat-card">
-            <div class="compat-item">
-                <span style="color:var(--agree); font-weight:bold;"><i class="fa-solid fa-face-smile"></i> 灵魂拍档</span>
-                <b id="res-best"></b>
+    <div id="app">
+        <section id="landing" class="screen">
+            <div class="hero-visual">
+                <div class="v-circle v-1"></div>
+                <div class="v-circle v-2"></div>
+                <i class="fa-solid fa-waveform-lines welcome-icon"></i>
             </div>
-            <div class="compat-item">
-                <span style="color:var(--disagree); font-weight:bold;"><i class="fa-solid fa-face-frown"></i> 频率错位</span>
-                <b id="res-worst"></b>
+            <div class="sub-title">Musical Mirror Pro</div>
+            <h1 class="main-title">声命镜像</h1>
+            <div class="intro-card">
+                <p>每个人的性格中都跳动着一段独特的旋律。基于 <b>MBTI 模型</b>，我们将深度解析你的灵魂构成。</p >
+                <p><i class="fa-solid fa-wand-magic-sparkles"></i> 20 道灵魂调律题，寻找那位在精神世界与你最契合的<b>古典音乐巨匠</b>。</p >
             </div>
-        </div>
+            <button class="btn-main" onclick="start()">开启灵魂调律 <i class="fa-solid fa-arrow-right-long"></i></button>
+        </section>
 
-        <button class="btn-main" onclick="location.reload()" style="background: #f0f0f5; color: #999; margin-top: 30px;">
-            <i class="fa-solid fa-rotate-left"></i> 重新调律
-        </button>
+        <section id="quiz" class="screen hidden">
+            <div class="progress-container"><div class="progress-bar" id="inner-bar"></div></div>
+            <div class="step-indicator">STAGE <span id="q-num">1</span>/20</div>
+            <h2 id="q-text">正在接入乐理逻辑...</h2>
+            <div class="choice-labels">
+                <span class="agree-label"><i class="fa-solid fa-circle-check"></i> 同意</span>
+                <span class="disagree-label">反对 <i class="fa-solid fa-circle-xmark"></i></span>
+            </div>
+            <div class="scale-box">
+                <div class="circle c-g s3" onclick="next(3)"></div>
+                <div class="circle c-g s2" onclick="next(2)"></div>
+                <div class="circle c-g s1" onclick="next(1)"></div>
+                <div class="circle s0" onclick="next(0)"></div>
+                <div class="circle c-p s1" onclick="next(-1)"></div>
+                <div class="circle c-p s2" onclick="next(-2)"></div>
+                <div class="circle c-p s3" onclick="next(-3)"></div>
+            </div>
+        </section>
+
+        <section id="result" class="screen hidden">
+            <header class="res-header">
+                <div class="mbti-code" id="res-mbti"></div>
+                <h1 id="res-name"></h1>
+                <div id="res-tags"></div>
+            </header>
+
+            <div class="chart-container">
+                <canvas id="radarChart"></canvas>
+            </div>
+
+            <div class="res-body">
+                <div class="desc-box" id="res-desc"></div>
+                <div id="res-facts" class="facts-container"></div>
+                
+                <div class="compat-section">
+                    <div class="compat-card best">
+                        <span>灵魂拍档</span>
+                        <b id="res-best"></b>
+                    </div>
+                    <div class="compat-card worst">
+                        <span>频率错位</span>
+                        <b id="res-worst"></b>
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn-main secondary" onclick="location.reload()">重新开启调律</button>
+        </section>
     </div>
-</div>
-
-<script>
-    const questions = [
-        { q: "在创作或学习时，你更享受独自钻研而非团队讨论。", type: "I" },
-        { q: "你认为艺术作品的逻辑严密性比情感爆发力更重要。", type: "T" },
-        { q: "你习惯为每一天制定详细的进度表并严格执行。", type: "J" },
-        { q: "你经常从梦境、诗歌或直觉中获得灵感。", type: "N" },
-        { q: "比起未来的可能性，你更关注当下的现实细节。", type: "S" },
-        { q: "在社交场合，你通常是那个主动发起对话的人。", type: "E" },
-        { q: "面对批评时，你会优先考虑事实而非他人情绪。", type: "T" },
-        { q: "你更倾向于随性发挥（如即兴），而非按部就班。", type: "P" },
-        { q: "你认为传统和经典框架是创新的基石。", type: "S" },
-        { q: "你非常在意他人感受，愿意为此改变计划。", type: "F" },
-        { q: "你在最后期限（DDL）的压力下效率更高。", type: "P" },
-        { q: "你受客观真理驱动，而非个人价值观。", type: "T" },
-        { q: "你更愿意在安静的琴房而非热闹的派对度过。", type: "I" },
-        { q: "你对新颖、甚至古怪的理论有着天然的好奇心。", type: "N" },
-        { q: "你认为生活应该是有条理、可预测的。", type: "J" },
-        { q: "你会因为音乐的情感共鸣流泪，而非分析技法。", type: "F" },
-        { q: "你享受被观众瞩目的瞬间。", type: "E" },
-        { q: "你倾向于通过亲身实践来学习，而非阅读理论。", type: "S" },
-        { q: "你会为了追求一个细节而推翻整个既定计划。", type: "P" },
-        { q: "你认为人际和谐比‘谁是对的’更重要。", type: "F" }
-    ];
-
-        const db = {
-        
-        "INTJ": { name: "贝多芬", tags: ["意志", "重构"], desc: "你是独立且深邃的思考者。不迎合世俗，兼具极致的浪漫抒情与现代理性。", facts: ["夜晚效率更高","专注时会进入忘我境界","逻辑是通往真相的唯一路径"], best: "斯特拉文斯基", worst: "莫扎特", stats: [85, 95, 100, 95, 95, 98] },
-        "INTP": { name: "勋伯格", tags: ["颠覆", "体系"], desc: "极致的理性先锋。脑海中充满奇思妙想，擅长拆解并重建复杂的秩序。", facts: ["常陷入白日梦","在意逻辑是否自洽","对陈规旧矩天然抵触"], best: "韦伯恩", worst: "柴可夫斯基", stats: [40, 98, 85, 98, 100, 100] },
-        "ENTJ": { name: "李斯特", tags: ["领袖", "华丽"], desc: "天生的舞台掌控者。拥有宏大的视野，不仅是卓越的执行者，更是时代的引领者。", facts: ["极具舞台魅力","追求极致的技巧展示","天生的组织者"], best: "瓦格纳", worst: "舒伯特", stats: [80, 90, 85, 98, 95, 95] },
-        "ENTP": { name: "普罗科菲耶夫", tags: ["机智", "怪诞"], desc: "思维跳跃的革新者。喜欢用讽刺和新奇的视角打破平庸的宁静。", facts: ["厌恶枯燥的传统","反应极快","喜欢挑战听众的习惯"], best: "斯特拉文斯基", worst: "肖邦", stats: [70, 88, 98, 85, 92, 98] },
-
-        
-        "INFJ": { name: "拉威尔", tags: ["精致", "完美"], desc: "精致的织网者。在冷静克制的外表下，隐藏着最绚烂、最复杂的幻想。", facts: ["对配器有极致追求","内心防线坚实","在克制中爆发能量"], best: "德彪西", worst: "莫扎特", stats: [92, 88, 85, 98, 92, 90] },
-        "INFP": { name: "肖邦", tags: ["诗人", "敏感"], desc: "纯粹的钢琴诗人。内心世界纤细，擅长将微小的波动化为动人的旋律。", facts: ["倾向沙龙而非大厅","对细节敏感","深夜即兴获得灵感"], best: "舒曼", worst: "巴赫", stats: [98, 30, 80, 90, 85, 95] },
-        "ENFJ": { name: "柴可夫斯基", tags: ["感染", "忧郁"], desc: "情感的灯塔。极具感染力，通过作品与他人的灵魂产生最深层的共鸣。", facts: ["容易受情绪左右","极度渴望被理解","旋律天才"], best: "拉赫玛尼诺夫", worst: "勋伯格", stats: [95, 45, 75, 95, 90, 95] },
-        "ENFP": { name: "舒曼", tags: ["幻想", "跨界"], desc: "永恒的幻想家。极具浪漫主义张力，总能在文学与艺术间找到归宿。", facts: ["双重人格倾向","热衷于音乐文学化","情感起伏剧烈"], best: "肖邦", worst: "门德尔松", stats: [98, 45, 95, 90, 85, 98] },
-
-        
-        "ISTJ": { name: "巴赫", tags: ["秩序", "神圣"], desc: "秩序的守护者。在严密的数学逻辑中发现美，是所有体系最坚实的基石。", facts: ["责任感极强","严守创作纪律","建筑般完美的结构"], best: "维瓦尔第", worst: "李斯特", stats: [20, 100, 100, 98, 90, 40] },
-        "ISFJ": { name: "勃拉姆斯", tags: ["克制", "厚重"], desc: "传统的坚守者。谦逊严谨，在经典框架内默默耕耘，沉淀出最厚重的情感。", facts: ["不愿张扬","对古典形式极度忠诚","情感深沉内敛"], best: "舒曼", worst: "瓦格纳", stats: [80, 85, 50, 90, 95, 90] },
-        "ESTJ": { name: "海顿", tags: ["平衡", "幽默"], desc: "交响曲之父。稳重且极具责任感，懂得如何在规则内发挥平衡的幽默感。", facts: ["高产且稳定","重视职业道德","情绪极度稳定"], best: "莫扎特", worst: "贝多芬", stats: [50, 95, 60, 95, 92, 85] },
-        "ESFJ": { name: "门德尔松", tags: ["优雅", "和谐"], desc: "优雅的协调者。追求和谐与美，在传统与浪漫之间找到了最完美的平衡点。", facts: ["社交达人","推崇平衡之美","厌恶极端的冲突"], best: "巴赫", worst: "波德莱尔", stats: [70, 75, 70, 92, 95, 88] },
-
-        
-        "ISTP": { name: "维瓦尔第", tags: ["动感", "写实"], desc: "务实的观察者。技巧精湛，擅长捕捉自然界的律动并将其转化为精准节奏。", facts: ["对节奏极度敏感","喜欢直观的表达","技法极其洗练"], best: "巴赫", worst: "勃拉姆斯", stats: [65, 85, 75, 90, 95, 90] },
-        "ISFP": { name: "舒伯特", tags: ["纯真", "自然"], desc: "自然的歌手。内敛纯真，对美有极致感知力，创作如同呼吸般自然流淌。", facts: ["生活在小圈子里","对自然的极度向往","旋律如泉涌"], best: "李斯特", worst: "勋伯格", stats: [90, 40, 70, 85, 80, 95] },
-        "ESTP": { name: "莫扎特", tags: ["灵动", "自由"], desc: "灵动的天才。不屑教条，世界对你而言是游乐场，能轻盈地解决难题。", facts: ["讨厌被束缚","直觉极为敏锐","天生的即兴大师"], best: "海顿", worst: "贝多芬", stats: [80, 45, 98, 98, 88, 100] },
-        "ESFP": { name: "格里格", tags: ["活力", "色彩"], desc: "活力的源泉。热爱土地与生活，作品充满了鲜明的色彩感和纯粹的快乐。", facts: ["热爱民族传统","性格开朗阳光","画面感极强"], best: "柴可夫斯基", worst: "巴赫", stats: [85, 35, 80, 85, 88, 95] }
-    };
-
-
-    let step = 0;
-    let sc = { E:0, I:0, S:0, N:0, T:0, F:0, J:0, P:0 };
-
-    function start() {
-        document.getElementById('landing').classList.add('hidden');
-        document.getElementById('quiz').classList.remove('hidden');
-        update();
-    }
-
-    function update() {
-        document.getElementById('q-num').innerText = step + 1;
-        document.getElementById('q-text').innerText = questions[step].q;
-        document.getElementById('inner-bar').style.width = `${((step+1)/questions.length)*100}%`;
-    }
-
-    function next(v) {
-        const q = questions[step];
-        const opp = {E:'I', I:'E', S:'N', N:'S', T:'F', F:'T', J:'P', P:'J'};
-        if(v > 0) sc[q.type] += v;
-        else if(v < 0) sc[opp[q.type]] += Math.abs(v);
-
-        step++;
-        if(step < questions.length) update();
-        else show();
-    }
-
-    function show() {
-        document.getElementById('quiz').classList.add('hidden');
-        document.getElementById('result').classList.remove('hidden');
-        
-        const m = (sc.E>=sc.I?'E':'I')+(sc.S>=sc.N?'S':'N')+(sc.T>=sc.F?'T':'F')+(sc.J>=sc.P?'J':'P');
-        const p = db[m] || db["INTJ"];
-
-        document.getElementById('res-mbti').innerText = m;
-        document.getElementById('res-name').innerText = p.name;
-        document.getElementById('res-tags').innerHTML = p.tags.map(t => `<span class="tag">${t}</span>`).join('');
-        document.getElementById('res-desc').innerText = p.desc;
-        document.getElementById('res-facts').innerHTML = p.facts.map(f => `<li class="fact-item"><i class="fa-solid fa-circle-dot"></i> ${f}</li>`).join('');
-        document.getElementById('res-best').innerText = p.best;
-        document.getElementById('res-worst').innerText = p.worst;
-
-        new Chart(document.getElementById('radarChart'), {
-            type: 'radar',
-            data: {
-                labels: ['创作天赋', '情感表达', '技法成熟', '风格辨识', '作品影响力', '艺术创新性'],
-                datasets: [{ 
-                    data: p.stats, 
-                    backgroundColor: 'rgba(108,92,231,0.2)', borderColor: '#6c5ce7', borderWidth: 2, pointRadius: 3, pointBackgroundColor: '#6c5ce7'
-                }]
-            },
-            options: { scales: { r: { min:0, max:100, ticks:{display:false}, grid:{color:'#f0f0f0'}, pointLabels:{font:{size:10}} } }, plugins:{legend:{display:false}} }
-        });
-    }
-</script>
+    <script src="script.js"></script>
 </body>
 </html>
