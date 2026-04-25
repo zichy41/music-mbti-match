@@ -6,83 +6,107 @@
     <title>声命镜像 Pro - 寻找你的古典灵魂</title>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@700&family=Playfair+Display:ital,wght@1,700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
         :root {
             --primary: #6c5ce7;
+            --primary-light: rgba(108, 92, 231, 0.1);
             --primary-grad: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 100%);
-            --bg: #f8faff;
+            --bg: #fcfcff;
             --text-main: #1d1d1f;
             --text-sub: #86868b;
             --agree: #00b894;
             --disagree: #ff7675;
+            --card-shadow: 0 20px 40px rgba(0,0,0,0.04);
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         
         body { 
             margin: 0; background: var(--bg); 
-            /* 苹果系高级字体栈 */
+            /* 强制极致抗锯齿，这是高级感的核心 */
             font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", sans-serif;
             -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
             display: flex; justify-content: center; color: var(--text-main);
         }
 
         #app {
             width: 100%; max-width: 414px; background: white; min-height: 100vh;
             position: relative; display: flex; flex-direction: column;
-            box-shadow: 0 0 50px rgba(0,0,0,0.02);
+            box-shadow: 0 0 60px rgba(0,0,0,0.03);
         }
 
-        .screen { padding: 40px 25px; flex: 1; display: flex; flex-direction: column; }
-        .hidden { display: none !important; }
+        .screen { padding: 45px 30px; flex: 1; display: flex; flex-direction: column; transition: all 0.5s ease; }
+        .hidden { display: none !important; opacity: 0; }
 
-        /* --- 首页设计 --- */
-        .hero-visual { position: relative; height: 200px; display: flex; justify-content: center; align-items: center; margin-bottom: 20px; }
-        .v-circle { position: absolute; border-radius: 50%; border: 1.5px solid rgba(108, 92, 231, 0.1); animation: pulse 3s infinite ease-in-out; }
-        .v-1 { width: 170px; height: 170px; }
-        .v-2 { width: 120px; height: 120px; animation-delay: 0.8s; }
+        /* --- 首页：动态与高级感 --- */
+        .hero-visual { position: relative; height: 220px; display: flex; justify-content: center; align-items: center; margin-bottom: 20px; }
+        .v-circle { position: absolute; border-radius: 50%; border: 1px solid rgba(108, 92, 231, 0.2); animation: pulse 4s infinite ease-in-out; }
+        .v-1 { width: 180px; height: 180px; }
+        .v-2 { width: 130px; height: 130px; animation-delay: 1s; }
         
-        @keyframes pulse { 0% { transform: scale(1); opacity: 0.3; } 50% { transform: scale(1.08); opacity: 0.6; } 100% { transform: scale(1); opacity: 0.3; } }
+        @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.2; } 50% { transform: scale(1.1); opacity: 0.5; } }
 
         .welcome-icon { 
-            font-size: 4.5rem; background: var(--primary-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; 
-            filter: drop-shadow(0 10px 15px rgba(108,92,231,0.2)); z-index: 2;
-            animation: floating 3s infinite ease-in-out;
+            font-size: 5rem; background: var(--primary-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; 
+            filter: drop-shadow(0 15px 25px rgba(108,92,231,0.25)); z-index: 2;
+            animation: floating 3.5s infinite ease-in-out;
         }
-        @keyframes floating { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        @keyframes floating { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
 
-        .main-title { font-size: 2.8rem; font-weight: 800; text-align: center; margin: 10px 0; letter-spacing: -1px; }
-        .intro-card { background: rgba(248, 250, 255, 0.8); border: 1px solid rgba(0,0,0,0.03); border-radius: 24px; padding: 25px; margin-bottom: 30px; }
-        .intro-card p { font-size: 0.95rem; line-height: 1.7; color: #48484a; margin: 0 0 10px 0; }
+        .main-title { font-size: 3rem; font-weight: 900; text-align: center; margin: 15px 0; letter-spacing: -1.5px; color: #000; }
+        .intro-card { background: #fbfbff; border: 1px solid #f0f0f5; border-radius: 28px; padding: 25px; margin-bottom: 35px; box-shadow: var(--card-shadow); }
+        .intro-card p { font-size: 1rem; line-height: 1.8; color: #424245; margin: 0 0 12px 0; }
 
-        /* --- 选择页设计 --- */
-        .progress-bar { width: 100%; height: 4px; background: #eee; border-radius: 2px; margin-bottom: 30px; overflow: hidden; }
-        .progress-inner { height: 100%; background: var(--primary); width: 0%; transition: 0.4s; }
+        /* --- 选择页：修正对齐逻辑 --- */
+        .progress-bar { width: 100%; height: 5px; background: #f2f2f7; border-radius: 10px; margin-bottom: 35px; overflow: hidden; }
+        .progress-inner { height: 100%; background: var(--primary-grad); width: 0%; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
         
-        .choice-labels { display: flex; justify-content: space-between; font-weight: bold; font-size: 0.9rem; margin-top: 50px; padding: 0 5px; }
-        .scale-box { display: flex; justify-content: space-between; align-items: center; margin: 30px 0; }
-        .circle { border: 2.5px solid; border-radius: 50%; cursor: pointer; transition: 0.2s; }
+        .q-header { font-weight: 800; color: #d1d1d6; font-size: 0.85rem; letter-spacing: 1px; }
+        #q-text { font-size: 1.6rem; margin-top: 25px; line-height: 1.4; font-weight: 700; height: 120px; }
+
+        .choice-labels { 
+            display: flex; justify-content: space-between; /* 强制两端分布 */
+            font-weight: 700; font-size: 0.95rem; margin-top: 40px; padding: 0 5px; 
+        }
+        .agree-label { color: var(--agree); }
+        .disagree-label { color: var(--disagree); }
+
+        .scale-box { display: flex; justify-content: space-between; align-items: center; margin: 35px -5px; }
+        .circle { border: 2.5px solid; border-radius: 50%; cursor: pointer; transition: 0.25s cubic-bezier(0.2, 0, 0, 1); }
+        .circle:active { transform: scale(0.85); background: rgba(0,0,0,0.05); }
         .c-g { border-color: var(--agree); } .c-p { border-color: var(--disagree); }
-        .s3 { width: 50px; height: 50px; } .s2 { width: 40px; height: 40px; } .s1 { width: 32px; height: 32px; } .s0 { width: 24px; height: 24px; border-color: #ddd; }
+        .s3 { width: 54px; height: 54px; } .s2 { width: 44px; height: 44px; } .s1 { width: 34px; height: 34px; } .s0 { width: 26px; height: 26px; border-color: #e5e5ea; }
 
-        /* --- 结果页设计 --- */
-        .res-header { text-align: center; margin-bottom: 20px; }
-        .mbti-code { font-family: 'Playfair Display', serif; font-style: italic; color: var(--primary); font-size: 1.3rem; letter-spacing: 2px; }
-        .res-header h1 { font-size: 2.5rem; margin: 5px 0; font-weight: 800; }
+        /* --- 结果页：高级排版与复原语录 --- */
+        .res-header { text-align: center; margin-bottom: 25px; }
+        .mbti-code { font-family: 'Playfair Display', serif; font-style: italic; color: var(--primary); font-size: 1.4rem; letter-spacing: 3px; }
+        #res-name { font-size: 2.8rem; margin: 8px 0; font-weight: 900; letter-spacing: -1px; }
         
-        .chart-wrap { background: #fbfbff; border-radius: 30px; padding: 20px; margin-bottom: 25px; border: 1px solid #f0f0f5; }
+        .chart-wrap { background: #fff; border-radius: 32px; padding: 20px; margin-bottom: 25px; border: 1px solid #f0f0f5; box-shadow: var(--card-shadow); }
+        
         .desc-box { 
-            background: white; padding: 25px; border-radius: 24px; line-height: 1.8; color: #48484a;
-            border-left: 5px solid var(--primary); box-shadow: 0 10px 30px rgba(0,0,0,0.03); margin-bottom: 25px;
+            background: #fff; padding: 28px; border-radius: 28px; line-height: 1.9; color: #424245;
+            border-left: 6px solid var(--primary); box-shadow: var(--card-shadow); margin-bottom: 30px; font-size: 1.05rem;
         }
-        .fact-item { background: #f5f5f7; padding: 15px 20px; border-radius: 16px; margin: 10px 0; font-size: 0.9rem; font-weight: 500; display: flex; align-items: center; }
-        .fact-item::before { content: "✦"; color: var(--primary); margin-right: 10px; }
+        .fact-item { background: #f5f5f7; padding: 18px 22px; border-radius: 20px; margin: 12px 0; font-size: 0.95rem; font-weight: 600; display: flex; align-items: center; }
+        .fact-item::before { content: "✦"; color: var(--primary); margin-right: 12px; font-size: 1.1rem; }
 
-        .btn-main { background: #1d1d1f; color: white; border: none; padding: 20px; border-radius: 18px; font-weight: bold; width: 100%; font-size: 1.1rem; cursor: pointer; transition: 0.3s; }
-        .btn-main:active { transform: scale(0.96); }
+        .btn-main { 
+            background: #1d1d1f; color: white; border: none; padding: 22px; border-radius: 20px; 
+            font-weight: 700; width: 100%; font-size: 1.15rem; cursor: pointer; transition: 0.3s;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .btn-main:active { transform: scale(0.97); background: #000; }
+        
+        /* 重新匹配的话语 */
+        .restart-text { 
+            text-align: center; color: var(--text-sub); font-size: 0.9rem; margin-top: 30px; line-height: 1.6;
+            padding: 0 20px; cursor: pointer; text-decoration: underline; text-underline-offset: 4px;
+        }
     </style>
 </head>
 <body>
@@ -92,24 +116,24 @@
         <div class="hero-visual">
             <div class="v-circle v-1"></div>
             <div class="v-circle v-2"></div>
-            <i class="fa-solid fa-music-note welcome-icon"></i>
+            <i class="fa-solid fa-compact-disc welcome-icon"></i>
         </div>
-        <div style="color: var(--primary); font-weight: bold; letter-spacing: 2px; text-align: center; font-size: 0.8rem;">MUSICAL MIRROR PRO</div>
+        <div style="color: var(--primary); font-weight: 800; letter-spacing: 3px; text-align: center; font-size: 0.8rem; margin-bottom: 5px;">MUSICAL MIRROR PRO</div>
         <h1 class="main-title">声命镜像</h1>
         <div class="intro-card">
-            <p>每个人的性格中都跳动着一段独特的旋律。<b>声命镜像</b>是一次基于心理学模型的艺术共鸣。</p>
-            <p><i class="fa-solid fa-wand-magic-sparkles"></i> 20 道灵魂调律题，为你寻找在精神世界最契合的<b>古典音乐巨匠</b>。</p>
+            <p>每个人的性格中都跳动着一段独特的旋律。基于 <b>MBTI 模型</b>，我们将深度解析你的灵魂构成。</p>
+            <p><i class="fa-solid fa-wand-magic-sparkles"></i> 20 道灵魂调律题，寻找那位在精神世界与你最契合的<b>古典音乐巨匠</b>。</p>
         </div>
-        <button class="btn-main" onclick="start()">开启灵魂调律 <i class="fa-solid fa-arrow-right"></i></button>
+        <button class="btn-main" onclick="start()">开启灵魂调律 <i class="fa-solid fa-arrow-right" style="margin-left: 8px;"></i></button>
     </section>
 
     <section id="quiz" class="screen hidden">
         <div class="progress-bar"><div class="progress-inner" id="p-bar"></div></div>
-        <div style="font-weight: bold; color: #ccc;">STAGE <span id="q-num">1</span>/20</div>
-        <h2 id="q-text" style="font-size: 1.5rem; margin-top: 20px;">正在加载调律逻辑...</h2>
+        <div class="q-header">STAGE <span id="q-num">1</span> / 20</div>
+        <h2 id="q-text">正在校准调律逻辑...</h2>
         <div class="choice-labels">
-            <span style="color: var(--agree)"><i class="fa-solid fa-check"></i> 同意</span>
-            <span style="color: var(--disagree)">反对 <i class="fa-solid fa-xmark"></i></span>
+            <span class="agree-label"><i class="fa-solid fa-circle-check"></i> 同意</span>
+            <span class="disagree-label">反对 <i class="fa-solid fa-circle-xmark"></i></span>
         </div>
         <div class="scale-box">
             <div class="circle c-g s3" onclick="next(3)"></div>
@@ -130,28 +154,32 @@
         <div class="chart-wrap"><canvas id="radarChart"></canvas></div>
         <div class="desc-box" id="res-desc"></div>
         <div id="res-facts"></div>
-        <button class="btn-main" onclick="location.reload()" style="background: #f2f2f7; color: #8e8e93; margin-top: 30px;">重新测试</button>
+        
+        <div class="restart-text" onclick="location.reload()">
+            乐章并未终结，点击此处重新开启另一场灵魂共鸣
+        </div>
     </section>
 </div>
 
 <script>
+    // 完整的 MBTI 数据库与古典音乐家对应
     const db = {
-        "INTJ": { name: "贝多芬", desc: "你是独立且深邃的思考者。你不迎合平庸，擅长在无序中建立宏伟的秩序。", facts: ["在黑暗中寻找光的逻辑","专注时世界为你静止","坚信意志可以重塑命运"], stats: [85, 95, 100, 95, 95, 98] },
-        "INTP": { name: "勋伯格", desc: "你是理性的探险家。你敢于拆解传承百年的规则，构建属于未来的逻辑体系。", facts: ["对逻辑自洽有苛刻要求","脑海中始终进行思维风暴","不在意大众的暂时误解"], stats: [40, 98, 85, 98, 100, 100] },
-        "INFJ": { name: "拉威尔", desc: "你是完美的工匠。你将炽热的情感浓缩在严苛的框架下，含蓄而绚烂。", facts: ["每一丝情绪都经过精确计算","社交外壳下是极致的细腻","追求极境的美感"], stats: [92, 88, 85, 98, 92, 90] },
-        "INFP": { name: "肖邦", desc: "你是灵魂的诗人。你对世界有极敏锐的触觉，用最轻盈的音符承载最沉重的忧郁。", facts: ["情感波动是创作源泉","在孤独中与自我深度对话","渴望理想化的共鸣"], stats: [98, 30, 80, 90, 85, 95] },
-        "ENTJ": { name: "李斯特", desc: "你是时代的引领者。你不仅拥有卓越的技巧，更有掌控全局的魅力与远见。", facts: ["舞台是你的天然领地","渴望突破生理与规则极限","极具开创精神"], stats: [85, 88, 90, 98, 95, 95] },
-        "ENTP": { name: "普罗科菲耶夫", desc: "你是机敏的博弈者。你乐于挑战常规，用出其不意的逻辑给世界带来惊喜。", facts: ["拒绝平庸的抒情方式","热衷于智力挑战","音乐中带有犀利的幽默感"], stats: [70, 88, 98, 85, 92, 98] },
-        "ENFJ": { name: "柴可夫斯基", desc: "你是情感的共振者。你的真挚让每一个音符都能直接击中听众最柔软的内心。", facts: ["渴望被理解与接纳","情感起伏即是生命律动","旋律极具歌唱性"], stats: [95, 45, 75, 95, 90, 95] },
-        "ENFP": { name: "舒曼", desc: "你是永恒的追梦人。你的世界充满了文学色彩，情感炽热到可以超越理性。", facts: ["文学与音乐的跨界大师","灵魂中寄宿着多重人格","对理想有着狂热追求"], stats: [98, 40, 95, 90, 85, 98] },
-        "ISTJ": { name: "巴赫", desc: "你是宇宙秩序的翻译者。你在最严密的复调逻辑中，触碰到了神圣的永恒。", facts: ["规则即是通往自由的路径","无与伦比的勤奋与严谨","建筑学般完美的逻辑感"], stats: [20, 100, 100, 98, 90, 40] },
-        "ISFJ": { name: "勃拉姆斯", desc: "你是传统的深情守望者。你在古典形式中，包裹着最细腻且厚重的人文关怀。", facts: ["不动声色的情感坚持","对传承有着天然敬畏心","内敛中蕴含巨大爆发力"], stats: [82, 85, 60, 90, 95, 90] },
-        "ESTJ": { name: "海顿", desc: "你是秩序的建立者。你懂得如何在结构与幽默之间寻找平衡，是定海神针。", facts: ["极高的产出效率与稳定性","懂得在规则内寻找乐趣","值得信赖的社交核心"], stats: [50, 95, 60, 95, 92, 85] },
-        "ESFJ": { name: "门德尔松", desc: "你是文明的传播者。你追求和谐与极致的平衡，将优雅化作了艺术准则。", facts: ["厌恶极端的冲突与无序","擅长维护人际和谐","创作逻辑清晰明快"], stats: [70, 75, 75, 92, 95, 88] },
-        "ISTP": { name: "维瓦尔第", desc: "你是自然的捕捉者。你拥有惊人的专注力，擅长复刻大地的律动。", facts: ["节奏感是思考的轴心","极其务实的创作态度","瞬间捕捉色彩的高手"], stats: [65, 85, 75, 90, 95, 90] },
-        "ISFP": { name: "舒伯特", desc: "你是大自然的歌手。你的创作如同泉水涌出，不带匠气，唯有最纯粹的真。", facts: ["倾向于小众表达","对自然有着原始向往","旋律感是你的本能"], stats: [90, 40, 70, 85, 80, 95] },
-        "ESTP": { name: "莫扎特", desc: "你是直觉的宠儿。你不需要费力思考，因为世界的逻辑本就存在于你的直觉中。", facts: ["讨厌被陈旧教条束缚","极强的即兴应变能力","举重若轻地平衡复杂性"], stats: [80, 45, 98, 98, 88, 100] },
-        "ESFP": { name: "格里格", desc: "你是民族色彩的绘图员。你热爱生活，擅长将最鲜活的烟火化作跳跃的音符。", facts: ["热爱具有生命力的传统","性格开朗且富有同情心","极强的视觉转化力"], stats: [85, 35, 80, 85, 88, 95] }
+        "INTJ": { name: "贝多芬", desc: "你是独立且深邃的思考者。你不迎合平庸，擅长在无序中建立宏伟的秩序，用坚韧的意志对抗命运。", facts: ["在黑暗中寻找光的逻辑","专注时世界为你静止","坚信意志可以重塑命运"], stats: [85, 95, 100, 95, 95, 98] },
+        "INTP": { name: "勋伯格", desc: "你是理性的探险家。你敢于拆解传承百年的规则，构建属于未来的逻辑体系，即便那充满挑战。", facts: ["对逻辑自洽有苛刻要求","脑海中始终进行思维风暴","不在意大众的暂时误解"], stats: [40, 98, 85, 98, 100, 100] },
+        "INFJ": { name: "拉威尔", desc: "你是完美的工匠。你将炽热的情感浓缩在严苛的框架下，含蓄而绚烂，每一处细节都经得起推敲。", facts: ["每一丝情绪都经过精确计算","社交外壳下是极致的细腻","追求极境的美感"], stats: [92, 88, 85, 98, 92, 90] },
+        "INFP": { name: "肖邦", desc: "你是灵魂的诗人。你对世界有极敏锐的触觉，用最轻盈的音符承载最沉重的忧郁，在孤独中绽放。", facts: ["情感波动是创作源泉","在孤独中与自我深度对话","渴望理想化的共鸣"], stats: [98, 30, 80, 90, 85, 95] },
+        "ENTJ": { name: "李斯特", desc: "你是时代的引领者。你不仅拥有卓越的技巧，更有掌控全局的魅力与远见，天生属于舞台的中心。", facts: ["舞台是你的天然领地","渴望突破生理与规则极限","极具开创精神"], stats: [85, 88, 90, 98, 95, 95] },
+        "ENTP": { name: "普罗科菲耶夫", desc: "你是机敏的博弈者。你乐于挑战常规，用出其不意的逻辑给世界带来惊喜，从不被教条束缚。", facts: ["拒绝平庸的抒情方式","热衷于智力挑战","音乐中带有犀利的幽默感"], stats: [70, 88, 98, 85, 92, 98] },
+        "ENFJ": { name: "柴可夫斯基", desc: "你是情感的共振者。你的真挚让每一个音符都能直接击中听众最柔软的内心，温暖且富有力量。", facts: ["渴望被理解与接纳","情感起伏即是生命律动","旋律极具歌唱性"], stats: [95, 45, 75, 95, 90, 95] },
+        "ENFP": { name: "舒曼", desc: "你是永恒的追梦人。你的世界充满了文学色彩与奇幻想象，情感炽热到可以超越理性的边际。", facts: ["文学与音乐的跨界大师","灵魂中寄宿着多重人格","对理想有着狂热追求"], stats: [98, 40, 95, 90, 85, 98] },
+        "ISTJ": { name: "巴赫", desc: "你是宇宙秩序的翻译者。你在最严密的复调逻辑中，触碰到了神圣的永恒，严谨中蕴含伟大。", facts: ["规则即是通往自由的路径","无与伦比的勤奋与严谨","建筑学般完美的逻辑感"], stats: [20, 100, 100, 98, 90, 40] },
+        "ISFJ": { name: "勃拉姆斯", desc: "你是传统的深情守望者。你在古典形式中，包裹着最细腻且厚重的人文关怀，内敛而坚定。", facts: ["不动声色的情感坚持","对传承有着天然敬畏心","内敛中蕴含巨大爆发力"], stats: [82, 85, 60, 90, 95, 90] },
+        "ESTJ": { name: "海顿", desc: "你是秩序的建立者。你懂得如何在结构与幽默之间寻找平衡，是值得所有人信赖的定海神针。", facts: ["极高的产出效率与稳定性","懂得在规则内寻找乐趣","值得信赖的社交核心"], stats: [50, 95, 60, 95, 92, 85] },
+        "ESFJ": { name: "门德尔松", desc: "你是文明的传播者。你追求和谐与极致的平衡，将优雅化作了艺术准则，极具亲和力。", facts: ["厌恶极端的冲突与无序","擅长维护人际和谐","创作逻辑清晰明快"], stats: [70, 75, 75, 92, 95, 88] },
+        "ISTP": { name: "维瓦尔第", desc: "你是自然的捕捉者。你拥有惊人的专注力，擅长复刻大地的律动，将瞬时的灵感化作永恒。", facts: ["节奏感是思考的轴心","极其务实的创作态度","瞬间捕捉色彩的高手"], stats: [65, 85, 75, 90, 95, 90] },
+        "ISFP": { name: "舒伯特", desc: "你是大自然的歌手。你的创作如同泉水涌出，不带一丝匠气，唯有最纯粹的情感流淌。", facts: ["倾向于小众表达","对自然有着原始向往","旋律感是你的本能"], stats: [90, 40, 70, 85, 80, 95] },
+        "ESTP": { name: "莫扎特", desc: "你是直觉的宠儿。你不需要费力思考，因为世界的逻辑本就存在于你的直觉中，举重若轻。", facts: ["讨厌被陈旧教条束缚","极强的即兴应变能力","举重若轻地平衡复杂性"], stats: [80, 45, 98, 98, 88, 100] },
+        "ESFP": { name: "格里格", desc: "你是民族色彩的绘图员。你热爱生活，擅长将最鲜活的烟火化作跳跃的音符，活在当下。", facts: ["热爱具有生命力的传统","性格开朗且富有同情心","极强的视觉转化力"], stats: [85, 35, 80, 85, 88, 95] }
     };
 
     const questions = [
@@ -178,51 +206,72 @@
     ];
 
     let step = 0;
-    let sc = { E:0, I:0, S:0, N:0, T:0, F:0, J:0, P:0 };
+    let scores = { E:0, I:0, S:0, N:0, T:0, F:0, J:0, P:0 };
 
     function start() {
         document.getElementById('landing').classList.add('hidden');
         document.getElementById('quiz').classList.remove('hidden');
-        update();
+        renderQuestion();
     }
 
-    function update() {
+    function renderQuestion() {
         document.getElementById('q-num').innerText = step + 1;
         document.getElementById('q-text').innerText = questions[step].q;
         document.getElementById('p-bar').style.width = `${((step+1)/questions.length)*100}%`;
     }
 
-    function next(v) {
-        const q = questions[step];
-        const opp = {E:'I', I:'E', S:'N', N:'S', T:'F', F:'T', J:'P', P:'J'};
-        if(v > 0) sc[q.type] += v;
-        else if(v < 0) sc[opp[q.type]] += Math.abs(v);
+    function next(value) {
+        const type = questions[step].type;
+        const opposites = {E:'I', I:'E', S:'N', N:'S', T:'F', F:'T', J:'P', P:'J'};
+        
+        if(value > 0) scores[type] += value;
+        else if(value < 0) scores[opposites[type]] += Math.abs(value);
+        
         step++;
-        if(step < questions.length) update();
-        else show();
+        if(step < questions.length) {
+            renderQuestion();
+        } else {
+            calculateResult();
+        }
     }
 
-    function show() {
+    function calculateResult() {
         document.getElementById('quiz').classList.add('hidden');
         document.getElementById('result').classList.remove('hidden');
-        const m = (sc.E>=sc.I?'E':'I')+(sc.S>=sc.N?'S':'N')+(sc.T>=sc.F?'T':'F')+(sc.J>=sc.P?'J':'P');
-        const p = db[m] || db["INTJ"];
         
-        document.getElementById('res-mbti').innerText = m;
-        document.getElementById('res-name').innerText = p.name;
-        document.getElementById('res-desc').innerText = p.desc;
-        document.getElementById('res-facts').innerHTML = p.facts.map(f => `<div class="fact-item">${f}</div>`).join('');
+        const mbti = (scores.E >= scores.I ? 'E' : 'I') +
+                     (scores.S >= scores.N ? 'S' : 'N') +
+                     (scores.T >= scores.F ? 'T' : 'F') +
+                     (scores.J >= scores.P ? 'J' : 'P');
+        
+        const person = db[mbti] || db["INTJ"];
+        
+        document.getElementById('res-mbti').innerText = mbti;
+        document.getElementById('res-name').innerText = person.name;
+        document.getElementById('res-desc').innerText = person.desc;
+        document.getElementById('res-facts').innerHTML = person.facts.map(f => `<div class="fact-item">${f}</div>`).join('');
 
-        new Chart(document.getElementById('radarChart'), {
+        // 渲染图表
+        const ctx = document.getElementById('radarChart').getContext('2d');
+        new Chart(ctx, {
             type: 'radar',
             data: {
                 labels: ['天赋', '情感', '技法', '辨识', '影响', '创新'],
                 datasets: [{ 
-                    data: p.stats, 
-                    backgroundColor: 'rgba(108,92,231,0.1)', borderColor: '#6c5ce7', borderWidth: 2, pointRadius: 3 
+                    data: person.stats, 
+                    backgroundColor: 'rgba(108, 92, 231, 0.15)', 
+                    borderColor: '#6c5ce7', 
+                    borderWidth: 3, 
+                    pointRadius: 4,
+                    pointBackgroundColor: '#6c5ce7'
                 }]
             },
-            options: { scales: { r: { min:0, max:100, ticks:{display:false} } }, plugins:{legend:{display:false}} }
+            options: { 
+                scales: { 
+                    r: { min: 0, max: 100, ticks: { display: false }, grid: { color: '#e5e5ea' } } 
+                }, 
+                plugins: { legend: { display: false } } 
+            }
         });
     }
 </script>
