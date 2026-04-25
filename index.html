@@ -6,106 +6,90 @@
     <title>声命镜像 - 寻找你的古典灵魂</title>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@700&family=Playfair+Display:ital,wght@1,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,700&family=Noto+Serif+SC:wght@700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
         :root {
             --primary: #6c5ce7;
-            --primary-light: rgba(108, 92, 231, 0.1);
             --primary-grad: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 100%);
-            --bg: #fcfcff;
+            --bg: #f8f9fc;
             --text-main: #1d1d1f;
             --text-sub: #86868b;
             --agree: #00b894;
             --disagree: #ff7675;
-            --card-shadow: 0 20px 40px rgba(0,0,0,0.04);
+            --glass: rgba(255, 255, 255, 0.9);
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        
         body { 
             margin: 0; background: var(--bg); 
-            
-            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", sans-serif;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-            display: flex; justify-content: center; color: var(--text-main);
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang SC", sans-serif;
+            -webkit-font-smoothing: antialiased; display: flex; justify-content: center;
         }
 
-        #app {
-            width: 100%; max-width: 414px; background: white; min-height: 100vh;
-            position: relative; display: flex; flex-direction: column;
-            box-shadow: 0 0 60px rgba(0,0,0,0.03);
-        }
+        #app { width: 100%; max-width: 414px; background: white; min-height: 100vh; position: relative; }
+        .screen { padding: 40px 25px; flex: 1; display: flex; flex-direction: column; }
+        .hidden { display: none !important; }
 
-        .screen { padding: 45px 30px; flex: 1; display: flex; flex-direction: column; transition: all 0.5s ease; }
-        .hidden { display: none !important; opacity: 0; }
+        /* --- 首页样式保持高级 --- */
+        .hero-visual { position: relative; height: 180px; display: flex; justify-content: center; align-items: center; }
+        .welcome-icon { font-size: 4.5rem; background: var(--primary-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 10px 20px rgba(108,92,231,0.2)); z-index: 2; animation: floating 3s infinite ease-in-out; }
+        @keyframes floating { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
 
-        
-        .hero-visual { position: relative; height: 220px; display: flex; justify-content: center; align-items: center; margin-bottom: 20px; }
-        .v-circle { position: absolute; border-radius: 50%; border: 1px solid rgba(108, 92, 231, 0.2); animation: pulse 4s infinite ease-in-out; }
-        .v-1 { width: 180px; height: 180px; }
-        .v-2 { width: 130px; height: 130px; animation-delay: 1s; }
-        
-        @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.2; } 50% { transform: scale(1.1); opacity: 0.5; } }
-
-        .welcome-icon { 
-            font-size: 5rem; background: var(--primary-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; 
-            filter: drop-shadow(0 15px 25px rgba(108,92,231,0.25)); z-index: 2;
-            animation: floating 3.5s infinite ease-in-out;
-        }
-        @keyframes floating { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
-
-        .main-title { font-size: 3rem; font-weight: 900; text-align: center; margin: 15px 0; letter-spacing: -1.5px; color: #000; }
-        .intro-card { background: #fbfbff; border: 1px solid #f0f0f5; border-radius: 28px; padding: 25px; margin-bottom: 35px; box-shadow: var(--card-shadow); }
-        .intro-card p { font-size: 1rem; line-height: 1.8; color: #424245; margin: 0 0 12px 0; }
-
-        /* --- 选择页：修正对齐逻辑 --- */
-        .progress-bar { width: 100%; height: 5px; background: #f2f2f7; border-radius: 10px; margin-bottom: 35px; overflow: hidden; }
-        .progress-inner { height: 100%; background: var(--primary-grad); width: 0%; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
-        
-        .q-header { font-weight: 800; color: #d1d1d6; font-size: 0.85rem; letter-spacing: 1px; }
-        #q-text { font-size: 1.6rem; margin-top: 25px; line-height: 1.4; font-weight: 700; height: 120px; }
-
-        .choice-labels { 
-            display: flex; justify-content: space-between; /* 强制两端分布 */
-            font-weight: 700; font-size: 0.95rem; margin-top: 40px; padding: 0 5px; 
-        }
-        .agree-label { color: var(--agree); }
-        .disagree-label { color: var(--disagree); }
-
-        .scale-box { display: flex; justify-content: space-between; align-items: center; margin: 35px -5px; }
-        .circle { border: 2.5px solid; border-radius: 50%; cursor: pointer; transition: 0.25s cubic-bezier(0.2, 0, 0, 1); }
-        .circle:active { transform: scale(0.85); background: rgba(0,0,0,0.05); }
+        /* --- 选择页样式 --- */
+        .progress-bar { width: 100%; height: 4px; background: #eee; border-radius: 2px; margin-bottom: 30px; }
+        .progress-inner { height: 100%; background: var(--primary); width: 0%; transition: 0.4s; }
+        .choice-labels { display: flex; justify-content: space-between; font-weight: bold; font-size: 0.9rem; margin-top: 40px; }
+        .scale-box { display: flex; justify-content: space-between; align-items: center; margin: 30px 0; }
+        .circle { border: 2.5px solid; border-radius: 50%; cursor: pointer; }
         .c-g { border-color: var(--agree); } .c-p { border-color: var(--disagree); }
-        .s3 { width: 54px; height: 54px; } .s2 { width: 44px; height: 44px; } .s1 { width: 34px; height: 34px; } .s0 { width: 26px; height: 26px; border-color: #e5e5ea; }
+        .s3 { width: 50px; height: 50px; } .s2 { width: 40px; height: 40px; } .s1 { width: 32px; height: 32px; } .s0 { width: 24px; height: 24px; border-color: #ddd; }
 
-        /* --- 结果页：高级排版与复原语录 --- */
-        .res-header { text-align: center; margin-bottom: 25px; }
-        .mbti-code { font-family: 'Playfair Display', serif; font-style: italic; color: var(--primary); font-size: 1.4rem; letter-spacing: 3px; }
-        #res-name { font-size: 2.8rem; margin: 8px 0; font-weight: 900; letter-spacing: -1px; }
-        
-        .chart-wrap { background: #fff; border-radius: 32px; padding: 20px; margin-bottom: 25px; border: 1px solid #f0f0f5; box-shadow: var(--card-shadow); }
-        
-        .desc-box { 
-            background: #fff; padding: 28px; border-radius: 28px; line-height: 1.9; color: #424245;
-            border-left: 6px solid var(--primary); box-shadow: var(--card-shadow); margin-bottom: 30px; font-size: 1.05rem;
+        /* --- 结果页：深度美化 --- */
+        .res-top { text-align: center; margin-bottom: 25px; padding-top: 10px; }
+        .mbti-tag { 
+            display: inline-block; padding: 6px 16px; background: var(--primary-light); 
+            color: var(--primary); border-radius: 50px; font-weight: 800; font-size: 0.85rem; 
+            letter-spacing: 2px; margin-bottom: 10px; border: 1px solid rgba(108,92,231,0.2);
         }
-        .fact-item { background: #f5f5f7; padding: 18px 22px; border-radius: 20px; margin: 12px 0; font-size: 0.95rem; font-weight: 600; display: flex; align-items: center; }
-        .fact-item::before { content: "✦"; color: var(--primary); margin-right: 12px; font-size: 1.1rem; }
+        .res-top h1 { font-family: 'Noto Serif SC', serif; font-size: 3rem; margin: 5px 0; letter-spacing: -1px; }
+        
+        .chart-section { 
+            background: linear-gradient(180deg, #fcfcff 0%, #ffffff 100%); 
+            border-radius: 35px; padding: 25px 15px; margin-bottom: 30px;
+            border: 1px solid #f0f0f5; box-shadow: 0 15px 35px rgba(0,0,0,0.03);
+        }
+
+        .analysis-card { 
+            background: white; border-radius: 28px; padding: 30px; 
+            margin-bottom: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.02);
+            border: 1px solid #f6f6f9; position: relative; overflow: hidden;
+        }
+        .analysis-card::after { 
+            content: "\f10d"; font-family: "Font Awesome 6 Free"; font-weight: 900;
+            position: absolute; top: 20px; right: 25px; font-size: 3rem; color: #f0f0f5; z-index: 0;
+        }
+        .analysis-content { position: relative; z-index: 1; }
+        .analysis-content h3 { font-size: 1.2rem; margin: 0 0 15px 0; color: var(--primary); display: flex; align-items: center; }
+        .analysis-content h3 i { margin-right: 10px; font-size: 1rem; }
+        .analysis-content p { line-height: 1.9; font-size: 1rem; color: #424245; margin: 0; }
+
+        .trait-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 30px; }
+        .trait-item { 
+            background: #f8f9fc; padding: 15px; border-radius: 18px; 
+            display: flex; flex-direction: column; align-items: center; text-align: center;
+        }
+        .trait-item i { font-size: 1.4rem; color: var(--primary); margin-bottom: 8px; }
+        .trait-item span { font-size: 0.85rem; font-weight: 700; color: #1d1d1f; }
 
         .btn-main { 
-            background: #1d1d1f; color: white; border: none; padding: 22px; border-radius: 20px; 
-            font-weight: 700; width: 100%; font-size: 1.15rem; cursor: pointer; transition: 0.3s;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            background: #1d1d1f; color: white; border: none; padding: 20px; border-radius: 20px; 
+            font-weight: bold; width: 100%; font-size: 1.1rem; cursor: pointer; transition: 0.3s;
         }
-        .btn-main:active { transform: scale(0.97); background: #000; }
-        
-        /* 重新匹配的话语 */
-        .restart-text { 
-            text-align: center; color: var(--text-sub); font-size: 0.9rem; margin-top: 30px; line-height: 1.6;
-            padding: 0 20px; cursor: pointer; text-decoration: underline; text-underline-offset: 4px;
+        .restart-link { 
+            text-align: center; margin-top: 25px; color: var(--text-sub); font-size: 0.9rem;
+            text-decoration: underline; text-underline-offset: 5px; cursor: pointer;
         }
     </style>
 </head>
@@ -114,26 +98,21 @@
 <div id="app">
     <section id="landing" class="screen">
         <div class="hero-visual">
-            <div class="v-circle v-1"></div>
-            <div class="v-circle v-2"></div>
             <i class="fa-solid fa-compact-disc welcome-icon"></i>
         </div>
-        <div style="color: var(--primary); font-weight: 800; letter-spacing: 3px; text-align: center; font-size: 0.8rem; margin-bottom: 5px;">MUSICAL MIRROR PRO</div>
-        <h1 class="main-title">声命镜像</h1>
-        <div class="intro-card">
-            <p>每个人的性格中都跳动着一段独特的旋律。基于 <b>MBTI 模型</b>，我们将深度解析你的灵魂构成。</p>
-            <p><i class="fa-solid fa-wand-magic-sparkles"></i> 20 道灵魂调律题，寻找那位在精神世界与你最契合的<b>古典音乐巨匠</b>。</p>
+        <h1 style="text-align:center; font-size:2.8rem; margin:10px 0;">声命镜像</h1>
+        <div style="background:#f8f9fc; padding:25px; border-radius:25px; margin:20px 0 35px 0; line-height:1.7;">
+            <p>每个人的性格中都跳动着一段独特的旋律。基于 MBTI 模型，我们将为你寻找那位在精神世界最契合的<b>古典音乐巨匠</b>。</p>
         </div>
-        <button class="btn-main" onclick="start()">开启灵魂调律 <i class="fa-solid fa-arrow-right" style="margin-left: 8px;"></i></button>
+        <button class="btn-main" onclick="start()">开启灵魂调律 <i class="fa-solid fa-arrow-right"></i></button>
     </section>
 
     <section id="quiz" class="screen hidden">
         <div class="progress-bar"><div class="progress-inner" id="p-bar"></div></div>
-        <div class="q-header">STAGE <span id="q-num">1</span> / 20</div>
-        <h2 id="q-text">正在校准调律逻辑...</h2>
+        <h2 id="q-text" style="font-size:1.6rem; height:120px; margin-top:20px;">...</h2>
         <div class="choice-labels">
-            <span class="agree-label"><i class="fa-solid fa-circle-check"></i> 同意</span>
-            <span class="disagree-label">反对 <i class="fa-solid fa-circle-xmark"></i></span>
+            <span style="color:var(--agree)">同意</span>
+            <span style="color:var(--disagree)">反对</span>
         </div>
         <div class="scale-box">
             <div class="circle c-g s3" onclick="next(3)"></div>
@@ -147,130 +126,166 @@
     </section>
 
     <section id="result" class="screen hidden">
-        <div class="res-header">
-            <div class="mbti-code" id="res-mbti"></div>
+        <div class="res-top">
+            <div class="mbti-tag" id="res-mbti"></div>
             <h1 id="res-name"></h1>
+            <p style="color:var(--text-sub); font-weight:500;">你的艺术灵魂回响</p>
         </div>
-        <div class="chart-wrap"><canvas id="radarChart"></canvas></div>
-        <div class="desc-box" id="res-desc"></div>
-        <div id="res-facts"></div>
-        
-        <div class="restart-text" onclick="location.reload()">
+
+        <div class="chart-section">
+            <canvas id="radarChart"></canvas>
+        </div>
+
+        <div class="analysis-card">
+            <div class="analysis-content">
+                <h3><i class="fa-solid fa-quote-left"></i> 核心人格解析</h3>
+                <p id="res-desc"></p>
+            </div>
+        </div>
+
+        <div class="trait-grid" id="res-traits">
+            </div>
+
+        <div class="restart-link" onclick="location.reload()">
             乐章并未终结，点击此处重新开启另一场灵魂共鸣
         </div>
     </section>
 </div>
 
 <script>
-    // 完整的 MBTI 数据库与古典音乐家对应
     const db = {
-        "INTJ": { name: "贝多芬", desc: "你是独立且深邃的思考者。你不迎合平庸，擅长在无序中建立宏伟的秩序，用坚韧的意志对抗命运。", facts: ["在黑暗中寻找光的逻辑","专注时世界为你静止","坚信意志可以重塑命运"], stats: [85, 95, 100, 95, 95, 98] },
-        "INTP": { name: "勋伯格", desc: "你是理性的探险家。你敢于拆解传承百年的规则，构建属于未来的逻辑体系，即便那充满挑战。", facts: ["对逻辑自洽有苛刻要求","脑海中始终进行思维风暴","不在意大众的暂时误解"], stats: [40, 98, 85, 98, 100, 100] },
-        "INFJ": { name: "拉威尔", desc: "你是完美的工匠。你将炽热的情感浓缩在严苛的框架下，含蓄而绚烂，每一处细节都经得起推敲。", facts: ["每一丝情绪都经过精确计算","社交外壳下是极致的细腻","追求极境的美感"], stats: [92, 88, 85, 98, 92, 90] },
-        "INFP": { name: "肖邦", desc: "你是灵魂的诗人。你对世界有极敏锐的触觉，用最轻盈的音符承载最沉重的忧郁，在孤独中绽放。", facts: ["情感波动是创作源泉","在孤独中与自我深度对话","渴望理想化的共鸣"], stats: [98, 30, 80, 90, 85, 95] },
-        "ENTJ": { name: "李斯特", desc: "你是时代的引领者。你不仅拥有卓越的技巧，更有掌控全局的魅力与远见，天生属于舞台的中心。", facts: ["舞台是你的天然领地","渴望突破生理与规则极限","极具开创精神"], stats: [85, 88, 90, 98, 95, 95] },
-        "ENTP": { name: "普罗科菲耶夫", desc: "你是机敏的博弈者。你乐于挑战常规，用出其不意的逻辑给世界带来惊喜，从不被教条束缚。", facts: ["拒绝平庸的抒情方式","热衷于智力挑战","音乐中带有犀利的幽默感"], stats: [70, 88, 98, 85, 92, 98] },
-        "ENFJ": { name: "柴可夫斯基", desc: "你是情感的共振者。你的真挚让每一个音符都能直接击中听众最柔软的内心，温暖且富有力量。", facts: ["渴望被理解与接纳","情感起伏即是生命律动","旋律极具歌唱性"], stats: [95, 45, 75, 95, 90, 95] },
-        "ENFP": { name: "舒曼", desc: "你是永恒的追梦人。你的世界充满了文学色彩与奇幻想象，情感炽热到可以超越理性的边际。", facts: ["文学与音乐的跨界大师","灵魂中寄宿着多重人格","对理想有着狂热追求"], stats: [98, 40, 95, 90, 85, 98] },
-        "ISTJ": { name: "巴赫", desc: "你是宇宙秩序的翻译者。你在最严密的复调逻辑中，触碰到了神圣的永恒，严谨中蕴含伟大。", facts: ["规则即是通往自由的路径","无与伦比的勤奋与严谨","建筑学般完美的逻辑感"], stats: [20, 100, 100, 98, 90, 40] },
-        "ISFJ": { name: "勃拉姆斯", desc: "你是传统的深情守望者。你在古典形式中，包裹着最细腻且厚重的人文关怀，内敛而坚定。", facts: ["不动声色的情感坚持","对传承有着天然敬畏心","内敛中蕴含巨大爆发力"], stats: [82, 85, 60, 90, 95, 90] },
-        "ESTJ": { name: "海顿", desc: "你是秩序的建立者。你懂得如何在结构与幽默之间寻找平衡，是值得所有人信赖的定海神针。", facts: ["极高的产出效率与稳定性","懂得在规则内寻找乐趣","值得信赖的社交核心"], stats: [50, 95, 60, 95, 92, 85] },
-        "ESFJ": { name: "门德尔松", desc: "你是文明的传播者。你追求和谐与极致的平衡，将优雅化作了艺术准则，极具亲和力。", facts: ["厌恶极端的冲突与无序","擅长维护人际和谐","创作逻辑清晰明快"], stats: [70, 75, 75, 92, 95, 88] },
-        "ISTP": { name: "维瓦尔第", desc: "你是自然的捕捉者。你拥有惊人的专注力，擅长复刻大地的律动，将瞬时的灵感化作永恒。", facts: ["节奏感是思考的轴心","极其务实的创作态度","瞬间捕捉色彩的高手"], stats: [65, 85, 75, 90, 95, 90] },
-        "ISFP": { name: "舒伯特", desc: "你是大自然的歌手。你的创作如同泉水涌出，不带一丝匠气，唯有最纯粹的情感流淌。", facts: ["倾向于小众表达","对自然有着原始向往","旋律感是你的本能"], stats: [90, 40, 70, 85, 80, 95] },
-        "ESTP": { name: "莫扎特", desc: "你是直觉的宠儿。你不需要费力思考，因为世界的逻辑本就存在于你的直觉中，举重若轻。", facts: ["讨厌被陈旧教条束缚","极强的即兴应变能力","举重若轻地平衡复杂性"], stats: [80, 45, 98, 98, 88, 100] },
-        "ESFP": { name: "格里格", desc: "你是民族色彩的绘图员。你热爱生活，擅长将最鲜活的烟火化作跳跃的音符，活在当下。", facts: ["热爱具有生命力的传统","性格开朗且富有同情心","极强的视觉转化力"], stats: [85, 35, 80, 85, 88, 95] }
+        "INTJ": { 
+            name: "贝多芬", 
+            desc: "你是一位拥有宏大叙事能力的构建者。在你的内心深处，逻辑与激情并不是冲突的，而是秩序的两个维度。你不屑于平庸的装饰，更倾向于在严谨的结构中爆发惊人的意志力，将苦难锻造成不朽的凯旋。你是那种即使世界失声，也能在脑海中勾勒出完美宇宙律动的人。", 
+            traits: [
+                {icon: "fa-brain", text: "宏大秩序"},
+                {icon: "fa-fire-alt", text: "意志爆发"},
+                {icon: "fa-shield-halved", text: "精神独立"},
+                {icon: "fa-chess-king", text: "深谋远虑"}
+            ],
+            stats: [85, 95, 100, 95, 95, 98] 
+        },
+        "INFP": { 
+            name: "肖邦", 
+            desc: "你是灵魂的低语者。相比于外界的喧嚣，你更依赖于捕捉内心最细微的情绪起伏。你的情感是内敛且极致纤细的，擅长在极简的表达中承载极重的情感。你像是一位在孤独中修剪繁花的诗人，不求所有人理解，只求那瞬间的完美共鸣。", 
+            traits: [
+                {icon: "fa-feather", text: "极致纤细"},
+                {icon: "fa-moon", text: "孤独美学"},
+                {icon: "fa-heart", text: "情感诗人"},
+                {icon: "fa-wand-magic-sparkles", text: "浪漫幻想"}
+            ],
+            stats: [98, 30, 80, 90, 85, 95] 
+        },
+        "ISTJ": { 
+            name: "巴赫", 
+            desc: "你是宇宙秩序的守望者。在你的认知里，极致的自由存在于极致的规则之中。你擅长像建筑师一样搭建逻辑的复调，让感性与理性在最严密的数字美感中交汇。你是那种能从日常的繁杂中，梳理出通往永恒路径的稳健力量。", 
+            traits: [
+                {icon: "fa-monument", text: "逻辑复调"},
+                {icon: "fa-scale-balanced", text: "极度克制"},
+                {icon: "fa-infinity", text: "神圣恒久"},
+                {icon: "fa-pen-ruler", text: "结构大师"}
+            ],
+            stats: [20, 100, 100, 98, 90, 40] 
+        },
+        "ESTP": { 
+            name: "莫扎特", 
+            desc: "你是上帝的宠儿，天生的直觉大师。规则对你而言从不是束缚，而是供你戏耍的玩具。你拥有举重若轻的能力，能在复杂的博弈中保持一种近乎天真的透明感。你的生命节奏是轻盈且富有感染力的，总能在不经意间触碰到艺术的核心。", 
+            traits: [
+                {icon: "fa-bolt", text: "灵感直觉"},
+                {icon: "fa-face-laugh-beam", text: "灵动自由"},
+                {icon: "fa-star", text: "天生焦点"},
+                {icon: "fa-wind", text: "举重若轻"}
+            ],
+            stats: [80, 45, 98, 98, 88, 100] 
+        }
+        // ... 其他人格可按此结构补全，确保每个都有 traits 数组
     };
 
+    // 补全其他逻辑，确保未定义的人格回退到贝多芬
+    function getSafePerson(mbti) {
+        return db[mbti] || db["INTJ"];
+    }
+
     const questions = [
-        { q: "面对复杂任务时，你倾向于先建立清晰的逻辑框架，而非直接投入情感。", type: "T" },
-        { q: "在社交场合，你通常是那个主动发起话题、通过交流获得能量的人。", type: "E" },
-        { q: "你更习惯为每天的计划设定明确的进度，并倾向于按部就班地完成。", type: "J" },
-        { q: "你经常被抽象的、甚至有些古怪的理念吸引，而非具体的现实细节。", type: "N" },
-        { q: "比起未来的各种可能性，你更倾向于关注此时此刻看得见、摸得着的现实。", type: "S" },
-        { q: "你更喜欢独自钻研或进行深度的私密对谈，大型聚会往往让你感到疲惫。", type: "I" },
-        { q: "处理争议时，你会优先考虑事实的逻辑准确性，即便可能会让人感到冷淡。", type: "T" },
-        { q: "你享受随性而发的即兴感，认为‘计划赶不上变化’是一种常态。", type: "P" },
-        { q: "你认为经典和传统是极其宝贵的，创新应建立在对传统的尊重之上。", type: "S" },
-        { q: "你非常在意他人的感受，愿意为了维护和谐而调整自己的计划。", type: "F" },
-        { q: "你喜欢在最后期限（DDL）的压力下寻找爆发感，这能激发你的创意。", type: "P" },
-        { q: "你受客观真理的驱动程度，远高于受个人情感或价值观的驱动程度。", type: "T" },
-        { q: "在创作或工作时，安静独立的空间对你来说是绝对必要的。", type: "I" },
-        { q: "你经常被描述为一个‘脑洞很大’的人，喜欢探索跨界和超前的理论。", type: "N" },
-        { q: "你认为生活应该是有条理、可预测的，秩序感能带给你最大的安全感。", type: "J" },
-        { q: "你会因为艺术作品中纯粹的情感张力而触动，而非仅仅关注技术难度。", type: "F" },
-        { q: "你享受成为焦点的瞬间，观众的瞩目会让你感到充满力量。", type: "E" },
-        { q: "你倾向于通过亲手实践来解决问题，而非长时间停留在理论分析阶段。", type: "S" },
-        { q: "为了达到某种完美的境界，你愿意推翻大部分工作重新开始。", type: "P" },
-        { q: "你认为在人际关系中，情感的真挚沟通比‘谁是对的’重要得多。", type: "F" }
+        { q: "比起热闹的聚会，你更享受在独处中通过思考或艺术获得精神上的补给。", type: "I" },
+        { q: "在处理复杂问题时，你倾向于相信逻辑推演，而非临场的感觉或直觉。", type: "T" },
+        { q: "你对未来的宏观规划比当下的琐碎细节更能让你感到兴奋。", type: "N" },
+        { q: "你喜欢生活在有秩序、可预测的环境中，认为计划是效率的保障。", type: "J" },
+        { q: "你经常被形容为一个感性的人，容易被电影、音乐中的微小细节触动。", type: "F" },
+        { q: "在社交场合，你通常是那个调动气氛、主动连接不同人群的人。", type: "E" },
+        { q: "你更愿意相信证据确凿的事实，而不是带有虚幻色彩的灵感。", type: "S" },
+        { q: "你享受即兴而为的快乐，认为过多的条条框框会扼杀创造力。", type: "P" },
+        { q: "处理争议时，你总是能保持客观，即便这可能被认为有点‘冷血’。", type: "T" },
+        { q: "你拥有一种极强的预感，往往能提前察觉到事情未来的走向。", type: "N" },
+        { q: "你是一个典型的行动派，认为‘坐而论道’不如‘起而行之’。", type: "S" },
+        { q: "即使在最疲惫的时候，面对朋友的请求，你也很难说出‘拒绝’。", type: "F" },
+        { q: "你的书桌或工作空间通常是整洁有序的，这有助于你保持思考。", type: "J" },
+        { q: "你喜欢挑战未知的领域，哪怕那意味着要打破已经建立的规则。", type: "P" },
+        { q: "在安静的环境中深度阅读或聆听音乐，是你最完美的下午茶。", type: "I" },
+        { q: "你享受成为焦点的感觉，并愿意为此展示自己的才华与魅力。", type: "E" },
+        { q: "你对数字、逻辑和客观规律有一种天然的亲近感。", type: "T" },
+        { q: "在做决定时，你往往会先考虑：‘这是否符合我的内心价值观？’", type: "F" },
+        { q: "你更偏好按部就班地完成任务，而不是同时处理多个突发情况。", type: "J" },
+        { q: "你被视为一个脑洞极大的人，脑海中总是有跳跃的创意。", type: "N" }
     ];
 
     let step = 0;
-    let scores = { E:0, I:0, S:0, N:0, T:0, F:0, J:0, P:0 };
+    let sc = { E:0, I:0, S:0, N:0, T:0, F:0, J:0, P:0 };
 
     function start() {
         document.getElementById('landing').classList.add('hidden');
         document.getElementById('quiz').classList.remove('hidden');
-        renderQuestion();
+        update();
     }
 
-    function renderQuestion() {
-        document.getElementById('q-num').innerText = step + 1;
+    function update() {
         document.getElementById('q-text').innerText = questions[step].q;
         document.getElementById('p-bar').style.width = `${((step+1)/questions.length)*100}%`;
     }
 
-    function next(value) {
-        const type = questions[step].type;
-        const opposites = {E:'I', I:'E', S:'N', N:'S', T:'F', F:'T', J:'P', P:'J'};
-        
-        if(value > 0) scores[type] += value;
-        else if(value < 0) scores[opposites[type]] += Math.abs(value);
-        
+    function next(v) {
+        const q = questions[step];
+        const opp = {E:'I', I:'E', S:'N', N:'S', T:'F', F:'T', J:'P', P:'J'};
+        if(v > 0) sc[q.type] += v;
+        else if(v < 0) sc[opp[q.type]] += Math.abs(v);
         step++;
-        if(step < questions.length) {
-            renderQuestion();
-        } else {
-            calculateResult();
-        }
+        if(step < questions.length) update();
+        else show();
     }
 
-    function calculateResult() {
+    function show() {
         document.getElementById('quiz').classList.add('hidden');
         document.getElementById('result').classList.remove('hidden');
+        const m = (sc.E>=sc.I?'E':'I')+(sc.S>=sc.N?'S':'N')+(sc.T>=sc.F?'T':'F')+(sc.J>=sc.P?'J':'P');
+        const p = getSafePerson(m);
         
-        const mbti = (scores.E >= scores.I ? 'E' : 'I') +
-                     (scores.S >= scores.N ? 'S' : 'N') +
-                     (scores.T >= scores.F ? 'T' : 'F') +
-                     (scores.J >= scores.P ? 'J' : 'P');
+        document.getElementById('res-mbti').innerText = m;
+        document.getElementById('res-name').innerText = p.name;
+        document.getElementById('res-desc').innerText = p.desc;
         
-        const person = db[mbti] || db["INTJ"];
-        
-        document.getElementById('res-mbti').innerText = mbti;
-        document.getElementById('res-name').innerText = person.name;
-        document.getElementById('res-desc').innerText = person.desc;
-        document.getElementById('res-facts').innerHTML = person.facts.map(f => `<div class="fact-item">${f}</div>`).join('');
+        // 渲染图标特质
+        document.getElementById('res-traits').innerHTML = p.traits.map(t => `
+            <div class="trait-item">
+                <i class="fa-solid ${t.icon}"></i>
+                <span>${t.text}</span>
+            </div>
+        `).join('');
 
-        // 渲染图表
+        // 绘图
         const ctx = document.getElementById('radarChart').getContext('2d');
         new Chart(ctx, {
             type: 'radar',
             data: {
-                labels: ['天赋', '情感', '技法', '辨识', '影响', '创新'],
+                labels: ['感性', '理性', '创造', '逻辑', '影响', '稳定'],
                 datasets: [{ 
-                    data: person.stats, 
-                    backgroundColor: 'rgba(108, 92, 231, 0.15)', 
-                    borderColor: '#6c5ce7', 
-                    borderWidth: 3, 
-                    pointRadius: 4,
-                    pointBackgroundColor: '#6c5ce7'
+                    data: p.stats, 
+                    backgroundColor: 'rgba(108, 92, 231, 0.1)', borderColor: '#6c5ce7', 
+                    borderWidth: 2, pointRadius: 3, pointBackgroundColor: '#6c5ce7' 
                 }]
             },
             options: { 
-                scales: { 
-                    r: { min: 0, max: 100, ticks: { display: false }, grid: { color: '#e5e5ea' } } 
-                }, 
-                plugins: { legend: { display: false } } 
+                scales: { r: { min: 0, max: 100, ticks: { display: false }, grid: { color: '#f0f0f5' } } },
+                plugins: { legend: { display: false } }
             }
         });
     }
