@@ -5,9 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>声命镜像 Pro</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700&family=Playfair+Display:ital,wght@1,600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div id="app">
@@ -15,24 +14,22 @@
             <div class="hero-visual">
                 <div class="v-circle v-1"></div>
                 <div class="v-circle v-2"></div>
-                <i class="fa-solid fa-waveform-lines welcome-icon"></i>
+                <i class="fa-solid fa-music-note welcome-icon"></i>
             </div>
-            <div class="sub-title">Musical Mirror Pro</div>
             <h1 class="main-title">声命镜像</h1>
             <div class="intro-card">
                 <p>每个人的性格中都跳动着一段独特的旋律。基于 <b>MBTI 模型</b>，我们将深度解析你的灵魂构成。</p >
-                <p><i class="fa-solid fa-wand-magic-sparkles"></i> 20 道灵魂调律题，寻找那位在精神世界与你最契合的<b>古典音乐巨匠</b>。</p >
             </div>
-            <button class="btn-main" onclick="start()">开启灵魂调律 <i class="fa-solid fa-arrow-right-long"></i></button>
+            <button class="btn-main" onclick="start()">开启灵魂调律 <i class="fa-solid fa-arrow-right"></i></button>
         </section>
 
         <section id="quiz" class="screen hidden">
-            <div class="progress-container"><div class="progress-bar" id="inner-bar"></div></div>
-            <div class="step-indicator">STAGE <span id="q-num">1</span>/20</div>
-            <h2 id="q-text">正在接入乐理逻辑...</h2>
+            <div class="progress-bar"><div class="progress-inner" id="p-bar"></div></div>
+            <div class="step-label">STAGE <span id="q-num">1</span>/20</div>
+            <h2 id="q-text">正在初始化...</h2>
             <div class="choice-labels">
-                <span class="agree-label"><i class="fa-solid fa-circle-check"></i> 同意</span>
-                <span class="disagree-label">反对 <i class="fa-solid fa-circle-xmark"></i></span>
+                <span class="agree-label"><i class="fa-solid fa-check"></i> 同意</span>
+                <span class="disagree-label">反对 <i class="fa-solid fa-xmark"></i></span>
             </div>
             <div class="scale-box">
                 <div class="circle c-g s3" onclick="next(3)"></div>
@@ -46,33 +43,14 @@
         </section>
 
         <section id="result" class="screen hidden">
-            <header class="res-header">
+            <div class="res-header">
                 <div class="mbti-code" id="res-mbti"></div>
                 <h1 id="res-name"></h1>
-                <div id="res-tags"></div>
-            </header>
-
-            <div class="chart-container">
-                <canvas id="radarChart"></canvas>
             </div>
-
-            <div class="res-body">
-                <div class="desc-box" id="res-desc"></div>
-                <div id="res-facts" class="facts-container"></div>
-                
-                <div class="compat-section">
-                    <div class="compat-card best">
-                        <span>灵魂拍档</span>
-                        <b id="res-best"></b>
-                    </div>
-                    <div class="compat-card worst">
-                        <span>频率错位</span>
-                        <b id="res-worst"></b>
-                    </div>
-                </div>
-            </div>
-
-            <button class="btn-main secondary" onclick="location.reload()">重新开启调律</button>
+            <div class="chart-wrap"><canvas id="radarChart"></canvas></div>
+            <div class="desc-box" id="res-desc"></div>
+            <div id="res-facts"></div>
+            <button class="btn-main" onclick="location.reload()" style="background:#f2f2f7; color:#8e8e93; margin-top:20px;">重新开启</button>
         </section>
     </div>
     <script src="script.js"></script>
